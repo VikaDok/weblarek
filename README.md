@@ -98,3 +98,142 @@ Presenter - презентер содержит основную логику п
 `emit<T extends object>(event: string, data?: T): void` - инициализация события. При вызове события в метод передается название события и объект с данными, который будет использован как аргумент для вызова обработчика.  
 `trigger<T extends object>(event: string, context?: Partial<T>): (data: T) => void` - возвращает функцию, при вызове которой инициализируется требуемое в параметрах событие с передачей в него данных из второго параметра.
 
+Данные
+
+Переменные окружения и константы
+
+Файл .env
+
+VITE_API_ORIGIN=https://larek-api.nomoreparties.co
+Файл src/utils/constants.ts
+
+API_URL = ${VITE_API_ORIGIN}/api/weblarek — базовый адрес API
+CDN_URL = ${VITE_API_ORIGIN}/content/weblarek — базовый адрес CDN для картинок
+categoryMap — соответствия категорий модификаторам для UI
+Типы данных
+
+Все типы и интерфейсы объявлены в файле: src/types/index.ts
+
+Интерфейсы
+
+ApiPostMethods
+
+'POST' | 'PUT' | 'DELETE' — допустимые методы при отправке данных на сервер
+IApi
+
+get<T>(uri: string): Promise<T> — GET-запрос на uri, вернёт данные типа T
+post<T>(uri: string, data: object, method?: ApiPostMethods): Promise<T> — отправка data на uri (по умолчанию POST), вернёт данные типа T
+TPayment
+
+'card' | 'cash' — способ оплаты: картой или наличными
+IProduct (товар)
+
+id: string — уникальный идентификатор
+description: string — описание
+image: string — имя файла картинки на CDN
+title: string — название товара
+category: string — категория
+price: number | null — цена в ₽; null — товар нельзя купить
+IBuyer (покупатель)
+
+payment: TPayment — способ оплаты
+email: string — e-mail
+phone: string — телефон
+address: string — адрес
+ICartItem (позиция заказа)
+
+productId: string — id товара из каталога
+qty: number — количество единиц
+IOrderRequest (данные для оформления заказа)
+
+items: ICartItem[] — массив позиций заказа
+customer: IBuyer — данные покупателя
+IValidationErrors (ошибки валидации)
+
+payment?: string — ошибка выбора способа оплаты
+email?: string — ошибка в e-mail
+phone?: string — ошибка в телефоне
+address?: string — ошибка в адресе
+IProductsResponse
+
+total: number — сколько всего товаров на сервере
+items: IProduct[] — массив товаров текущего запроса
+IOrderResponse
+
+id: string — идентификатор созданного заказа
+Модели данных
+
+Модели слоя Model изолированы, каждая отвечает строго за свою задачу.
+
+CatalogModel
+
+Назначение: хранение каталога товаров и выбранного товара для детального просмотра
+
+Поля:
+
+products: IProduct[] — список всех товаров
+previewId?: string — id товара, выбранного для предпросмотра
+Методы:
+
+setProducts(list: IProduct[]): void — сохранить массив товаров
+getProducts(): IProduct[] — получить весь каталог
+getById(id: string): IProduct | undefined — получить товар по id
+setPreview(id?: string): void — выбрать товар для предпросмотра
+getPreview(): IProduct | undefined — получить текущий товар предпросмотра
+События:
+
+catalog:changed — обновился список товаров
+catalog:preview — выбран товар для предпросмотра
+CartModel
+
+Назначение: хранение выбранных пользователем товаров и расчёт агрегатов корзины
+
+Поля:
+
+items: ICartItem[] — содержимое корзины
+Методы:
+
+getItems(): ICartItem[] — получить позиции корзины
+add(productId: string, qty = 1): void — добавить товар
+remove(productId: string): void — удалить товар
+clear(): void — очистить корзину
+getCount(): number — суммарное количество единиц товара
+getTotalPrice(products: IProduct[]): number — итоговая стоимость
+has(productId: string): boolean — проверка наличия товара в корзине
+События:
+
+cart:changed — корзина изменилась
+BuyerModel
+
+Назначение: хранение данных покупателя и их валидация
+
+Поля:
+
+payment?: TPayment
+email?: string
+phone?: string
+address?: string
+Методы:
+
+patch(data: Partial<IBuyer>): void — частичное сохранение данных
+get(): IBuyer — получить все данные покупателя
+clear(): void — очистить данные
+validate(): IValidationErrors — валидация полей по правилу «поле не пустое»
+События:
+
+buyer:changed — изменены данные покупателя
+Слой коммуникации
+
+Класс ShopApi (src/components/services/ShopApi.ts) инкапсулирует работу с сервером.
+
+Конструктор:
+
+constructor(http: IApi) — принимает любой объект по интерфейсу IApi
+Методы:
+
+getProducts(): Promise<IProduct[]> — GET /product/, возвращает массив товаров
+createOrder(payload: IOrderRequest): Promise<IOrderResponse> — POST /order/, отправляет данные заказа
+Типы ответов:
+
+IProductsResponse { total: number; items: IProduct[] }
+IOrderResponse { id: string }
