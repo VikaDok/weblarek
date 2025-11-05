@@ -123,9 +123,11 @@ IApi
 
 get<T>(uri: string): Promise<T> — GET-запрос на uri, вернёт данные типа T
 post<T>(uri: string, data: object, method?: ApiPostMethods): Promise<T> — отправка data на uri (по умолчанию POST), вернёт данные типа T
+
 TPayment
 
-'card' | 'cash' — способ оплаты: картой или наличными
+'online' | 'offline' — способ оплаты: картой или наличными
+
 IProduct (товар)
 
 id: string — уникальный идентификатор
@@ -134,19 +136,27 @@ image: string — имя файла картинки на CDN
 title: string — название товара
 category: string — категория
 price: number | null — цена в ₽; null — товар нельзя купить
+
 IBuyer (покупатель)
 
 payment: TPayment — способ оплаты
 email: string — e-mail
 phone: string — телефон
 address: string — адрес
+
 ICartItem (позиция заказа)
 
 productId: string — id товара из каталога
-qty: number — количество единиц
+quantity: number — количество единиц
+
 IOrderRequest (данные для оформления заказа)
 
-items: ICartItem[] — массив позиций заказа
+payment: TPayment — способ оплаты
+email: string — e-mail
+phone: string — телефон  
+address: string — адрес
+total: number — сумма заказа
+items: string[] — массив ID товаров
 customer: IBuyer — данные покупателя
 IValidationErrors (ошибки валидации)
 
@@ -154,13 +164,16 @@ payment?: string — ошибка выбора способа оплаты
 email?: string — ошибка в e-mail
 phone?: string — ошибка в телефоне
 address?: string — ошибка в адресе
+
 IProductsResponse
 
 total: number — сколько всего товаров на сервере
 items: IProduct[] — массив товаров текущего запроса
+
 IOrderResponse
 
 id: string — идентификатор созданного заказа
+
 Модели данных
 
 Модели слоя Model изолированы, каждая отвечает строго за свою задачу.
@@ -173,6 +186,7 @@ CatalogModel
 
 products: IProduct[] — список всех товаров
 previewId?: string — id товара, выбранного для предпросмотра
+
 Методы:
 
 setProducts(list: IProduct[]): void — сохранить массив товаров
@@ -180,10 +194,12 @@ getProducts(): IProduct[] — получить весь каталог
 getById(id: string): IProduct | undefined — получить товар по id
 setPreview(id?: string): void — выбрать товар для предпросмотра
 getPreview(): IProduct | undefined — получить текущий товар предпросмотра
+
 События:
 
 catalog:changed — обновился список товаров
 catalog:preview — выбран товар для предпросмотра
+
 CartModel
 
 Назначение: хранение выбранных пользователем товаров и расчёт агрегатов корзины
@@ -191,18 +207,21 @@ CartModel
 Поля:
 
 items: ICartItem[] — содержимое корзины
+
 Методы:
 
 getItems(): ICartItem[] — получить позиции корзины
-add(productId: string, qty = 1): void — добавить товар
+add(product: IProduct, quantity = 1): void — добавить товар
 remove(productId: string): void — удалить товар
 clear(): void — очистить корзину
 getCount(): number — суммарное количество единиц товара
 getTotalPrice(products: IProduct[]): number — итоговая стоимость
 has(productId: string): boolean — проверка наличия товара в корзине
+
 События:
 
 cart:changed — корзина изменилась
+
 BuyerModel
 
 Назначение: хранение данных покупателя и их валидация
@@ -213,12 +232,14 @@ payment?: TPayment
 email?: string
 phone?: string
 address?: string
+
 Методы:
 
 patch(data: Partial<IBuyer>): void — частичное сохранение данных
 get(): IBuyer — получить все данные покупателя
 clear(): void — очистить данные
 validate(): IValidationErrors — валидация полей по правилу «поле не пустое»
+
 События:
 
 buyer:changed — изменены данные покупателя
@@ -229,10 +250,12 @@ buyer:changed — изменены данные покупателя
 Конструктор:
 
 constructor(http: IApi) — принимает любой объект по интерфейсу IApi
+
 Методы:
 
 getProducts(): Promise<IProduct[]> — GET /product/, возвращает массив товаров
 createOrder(payload: IOrderRequest): Promise<IOrderResponse> — POST /order/, отправляет данные заказа
+
 Типы ответов:
 
 IProductsResponse { total: number; items: IProduct[] }

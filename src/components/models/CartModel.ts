@@ -34,4 +34,8 @@ export class CartModel {
         }
         return total;
     }
+
+    getProductIds(): string[] {
+        return this.items.map(item => item.id);
+    }
 }

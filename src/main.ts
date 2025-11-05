@@ -29,10 +29,11 @@ if (second) cart.add(second);
 console.log('Товары в корзине:', cart.getItems());
 console.log('Количество товаров в корзине:', cart.getCount());
 console.log('Итоговая сумма корзины:', cart.getTotal());
+console.log('ID товаров для заказа:', cart.getProductIds());
 
 if (first) {
     cart.remove(first.id);
-    console.log('После удаления первго товара:', cart.getItems());
+    console.log('После удаления первого товара:', cart.getItems());
 }
 
 cart.clear();
@@ -42,7 +43,7 @@ console.log('После очистки корзины:', cart.getItems());
 const buyer = new BuyerModel();
 console.log('Проверка на пустых данных:', buyer.validate());
 
-buyer.setData({ payment: 'card' });
+buyer.setData({ payment: 'online' });
 buyer.setData({ address: 'Москва, ул. Красная, 10' });
 buyer.setData({ email: 'name@mail.ru' });
 buyer.setData({ phone: '+7 918 111 11 11' });
