@@ -23,11 +23,6 @@ export interface IBuyer {
     address: string;
 }
 
-export interface ICartItem {
-    productId: string;
-    quantity: number;
-}
-
 export interface IOrderRequest {
     payment: TPayment;
     email: string;

@@ -144,11 +144,6 @@ email: string — e-mail
 phone: string — телефон
 address: string — адрес
 
-ICartItem (позиция заказа)
-
-productId: string — id товара из каталога
-quantity: number — количество единиц
-
 IOrderRequest (данные для оформления заказа)
 
 payment: TPayment — способ оплаты
@@ -206,12 +201,12 @@ CartModel
 
 Поля:
 
-items: ICartItem[] — содержимое корзины
+items: IProduct[] — содержимое корзины
 
 Методы:
 
-getItems(): ICartItem[] — получить позиции корзины
-add(product: IProduct, quantity = 1): void — добавить товар
+getItems(): IProduct[] — получить позиции корзины
+add(product: IProduct): void — добавить товар (только уникальные товары)
 remove(productId: string): void — удалить товар
 clear(): void — очистить корзину
 getCount(): number — суммарное количество единиц товара
