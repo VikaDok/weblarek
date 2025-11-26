@@ -23,13 +23,14 @@ export interface IBuyer {
     address: string;
 }
 
+export interface ICartItem {
+    productId: string;
+    quantity: number;
+}
+
 export interface IOrderRequest {
-    payment: TPayment;
-    email: string;
-    phone: string;
-    address: string;
-    total: number;
-    items: string[];
+    items: ICartItem[];
+    customer: IBuyer;
 }
 
 export interface IValidationErrors {
@@ -48,3 +49,33 @@ export interface IOrderResponse {
     id: string;
     total: number;
 }
+
+export interface IGallery {
+    items: HTMLElement[];
+}
+
+export interface IBasket {
+    items: HTMLElement[];
+    total: number;
+    selected: string[];
+}
+
+//создаем карточки для Gallery
+// events.on('catalog:changed', () => {
+//     const itemCards = productsModel.getItems().map((item) => {
+//         const card = new CardCatalog(cloneTemplate(cardCatalogTemplate), {
+//             onClick: () => events.emit('card:select', item),
+//         });
+
+//         return card.render(item);
+//     });
+
+//     gallery.render({ catalog: itemCards });
+// });
+
+// larekApi
+//     .getProductList()
+//     .then((data) => {
+//         productsModel.setItems(data.items);
+//     })
+//     .catch((err) => console.error(err));
