@@ -10,6 +10,12 @@ export class Modal extends Component<IModal> {
     protected closeButton: HTMLButtonElement;
     protected contentElement: HTMLElement;
 
+    private handleEscape = (evt: KeyboardEvent) => {
+        if (evt.key === 'Escape') {
+            this.events.emit('modal:request-close');
+        }
+    };
+
     constructor(protected events: IEvents, container: HTMLElement) {
         super(container);
 
@@ -28,11 +34,13 @@ export class Modal extends Component<IModal> {
 
     open() {
         this.container.classList.add('modal_active');
+        document.addEventListener('keydown', this.handleEscape);
     }
 
     close() {
         this.container.classList.remove('modal_active');
         this.contentElement.innerHTML = '';
+        document.removeEventListener('keydown', this.handleEscape);
     }
 
     set content(value: HTMLElement) {

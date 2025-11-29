@@ -18,6 +18,7 @@ import { Success } from './components/views/forms/Success';
 import { Order } from './components/views/forms/Order';
 import { Contacts } from './components/views/forms/Contacts';
 import { cloneTemplate, ensureElement } from './utils/utils';
+import { IProduct } from './types';
 
 const events = new Events();
 
@@ -57,8 +58,8 @@ events.on('modal:request-close', () => {
 });
 
 //каталог
-events.on('catalog:changed', ({ items }) => {
-    const cards = items.map((product) => {
+events.on('catalog:changed', (data: { items: IProduct[] }) => {
+    const cards = data.items.map((product) => {
         const node = cloneTemplate(templateCatalog);
         const card = new CardCatalog(node, {
             onClick: () => events.emit('card:selected', { id: product.id }), 
@@ -69,8 +70,8 @@ events.on('catalog:changed', ({ items }) => {
     gallery.items = cards;
 });
 
-events.on('card:selected', ({ id }) => {
-    catalog.setPreview(id);
+events.on('card:selected', (data: { id: string }) => {
+    catalog.setPreview(data.id);
 });
 
 //открываем Preview
@@ -94,14 +95,14 @@ events.on('catalog:preview', () => {
 });
 
 //добавляем/удаляем из Preview
-events.on('preview:action', ({ id }) => {
-    const product = catalog.getById(id);
+events.on('preview:action', (data: { id: string }) => {
+    const product = catalog.getById(data.id);
     if (!product) return;
 
-    const inCart = cart.getItems().some((item) => item.id === id);
+    const inCart = cart.getItems().some((item) => item.id === data.id);
 
     if (inCart) {
-        cart.remove(id);
+        cart.remove(data.id);
     } else {
         cart.add(product);
     }
@@ -121,8 +122,8 @@ events.on('basket:open', () => {
     modal.open();
 });
 
-events.on('cart:item:remove', ({ id }) => {
-    cart.remove(id);
+events.on('cart:item:remove', (data: { id: string }) => {
+    cart.remove(data.id);
 });
 
 //оформляем
@@ -132,13 +133,13 @@ events.on('cart:checkout', () => {
 });
 
 //выбираем способ оплаты
-events.on('order:payment', ({ field, value }) => {
-    buyer.setData({ [field]: value });
+events.on('order:payment', (data: { field: string; value: string }) => {
+    buyer.setData({ [data.field]: data.value });
 });
 
 //вовдим адрес
-events.on('order:address', ({ field, value }) => {
-    buyer.setData({ [field]: value });
+events.on('order:address', (data: { field: string; value: string }) => {
+    buyer.setData({ [data.field]: data.value });
 });
 
 //переход в Contacts
@@ -147,8 +148,8 @@ events.on('order:submit', () => {
 });
 
 //вводим телефон, почту и передаем в Buyer
-events.on('contacts:email', ({ email }) => buyer.setData({ email }));
-events.on('contacts:phone', ({ phone }) => buyer.setData({ phone }));
+events.on('contacts:email', (data: { email: string }) => buyer.setData({ email: data.email }));
+events.on('contacts:phone', (data: { phone: string }) => buyer.setData({ phone: data.phone }));
 
 //обновляем форму после смены покупателя
 events.on('buyer:changed', () => {
