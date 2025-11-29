@@ -1,3 +1,5 @@
+
+```markdown
 # Проектная работа "Веб-ларек"
 
 Стек: HTML, SCSS, TS, Vite
@@ -29,6 +31,7 @@ npm run dev
 yarn
 yarn dev
 ```
+
 ## Сборка
 
 ```
@@ -40,6 +43,7 @@ npm run build
 ```
 yarn build
 ```
+
 # Интернет-магазин «Web-Larёk»
 «Web-Larёk» — это интернет-магазин с товарами для веб-разработчиков, где пользователи могут просматривать товары, добавлять их в корзину и оформлять заказы. Сайт предоставляет удобный интерфейс с модальными окнами для просмотра деталей товаров, управления корзиной и выбора способа оплаты, обеспечивая полный цикл покупки с отправкой заказов на сервер.
 
@@ -59,202 +63,193 @@ Presenter - презентер содержит основную логику п
 Является базовым классом для всех компонентов интерфейса.
 Класс является дженериком и принимает в переменной `T` тип данных, которые могут быть переданы в метод `render` для отображения.
 
-Конструктор:  
-`constructor(container: HTMLElement)` - принимает ссылку на DOM элемент за отображение, которого он отвечает.
+**Конструктор:**  
+- `container: HTMLElement` - DOM-элемент, к которому привязывается компонент
 
-Поля класса:  
-`container: HTMLElement` - поле для хранения корневого DOM элемента компонента.
+**Поля класса:**  
+- `container: HTMLElement` - поле для хранения корневого DOM элемента компонента.
 
-Методы класса:  
-`render(data?: Partial<T>): HTMLElement` - Главный метод класса. Он принимает данные, которые необходимо отобразить в интерфейсе, записывает эти данные в поля класса и возвращает ссылку на DOM-элемент. Предполагается, что в классах, которые будут наследоваться от `Component` будут реализованы сеттеры для полей с данными, которые будут вызываться в момент вызова `render` и записывать данные в необходимые DOM элементы.  
-`setImage(element: HTMLImageElement, src: string, alt?: string): void` - утилитарный метод для модификации DOM-элементов `<img>`
-
+**Методы класса:**  
+- `render(data?: Partial<T>): HTMLElement` - Главный метод класса. Он принимает данные, которые необходимо отобразить в интерфейсе, записывает эти данные в поля класса и возвращает ссылку на DOM-элемент. Предполагается, что в классах, которые будут наследоваться от `Component` будут реализованы сеттеры для полей с данными, которые будут вызываться в момент вызова `render` и записывать данные в необходимые DOM элементы.  
+- `setImage(element: HTMLImageElement, src: string, alt?: string): void` - утилитарный метод для модификации DOM-элементов `<img>`
 
 #### Класс Api
 Содержит в себе базовую логику отправки запросов.
 
-Конструктор:  
-`constructor(baseUrl: string, options: RequestInit = {})` - В конструктор передается базовый адрес сервера и опциональный объект с заголовками запросов.
+**Конструктор:**  
+- `baseUrl: string` - базовый адрес сервера
+- `options: RequestInit = {}` - опциональный объект с заголовками запросов
 
-Поля класса:  
-`baseUrl: string` - базовый адрес сервера  
-`options: RequestInit` - объект с заголовками, которые будут использованы для запросов.
+**Поля класса:**  
+- `baseUrl: string` - базовый адрес сервера  
+- `options: RequestInit` - объект с заголовками, которые будут использованы для запросов.
 
-Методы:  
-`get(uri: string): Promise<object>` - выполняет GET запрос на переданный в параметрах ендпоинт и возвращает промис с объектом, которым ответил сервер  
-`post(uri: string, data: object, method: ApiPostMethods = 'POST'): Promise<object>` - принимает объект с данными, которые будут переданы в JSON в теле запроса, и отправляет эти данные на ендпоинт переданный как параметр при вызове метода. По умолчанию выполняется `POST` запрос, но метод запроса может быть переопределен заданием третьего параметра при вызове.  
-`handleResponse(response: Response): Promise<object>` - защищенный метод проверяющий ответ сервера на корректность и возвращающий объект с данными полученный от сервера или отклоненный промис, в случае некорректных данных.
+**Методы:**  
+- `get(uri: string): Promise<object>` - выполняет GET запрос на переданный в параметрах ендпоинт и возвращает промис с объектом, которым ответил сервер  
+- `post(uri: string, data: object, method: ApiPostMethods = 'POST'): Promise<object>` - принимает объект с данными, которые будут переданы в JSON в теле запроса, и отправляет эти данные на ендпоинт переданный как параметр при вызове метода. По умолчанию выполняется `POST` запрос, но метод запроса может быть переопределен заданием третьего параметра при вызове.  
+- `handleResponse(response: Response): Promise<object>` - защищенный метод проверяющий ответ сервера на корректность и возвращающий объект с данными полученный от сервера или отклоненный промис, в случае некорректных данных.
 
 #### Класс EventEmitter
 Брокер событий реализует паттерн "Наблюдатель", позволяющий отправлять события и подписываться на события, происходящие в системе. Класс используется для связи слоя данных и представления.
 
-Конструктор класса не принимает параметров.
+**Конструктор:** Не принимает параметров
 
-Поля класса:  
-`_events: Map<string | RegExp, Set<Function>>)` -  хранит коллекцию подписок на события. Ключи коллекции - названия событий или регулярное выражение, значения - коллекция функций обработчиков, которые будут вызваны при срабатывании события.
+**Поля класса:**  
+- `_events: Map<string | RegExp, Set<Function>>)` -  хранит коллекцию подписок на события. Ключи коллекции - названия событий или регулярное выражение, значения - коллекция функций обработчиков, которые будут вызваны при срабатывании события.
 
-Методы класса:  
-`on<T extends object>(event: EventName, callback: (data: T) => void): void` - подписка на событие, принимает название события и функцию обработчик.  
-`emit<T extends object>(event: string, data?: T): void` - инициализация события. При вызове события в метод передается название события и объект с данными, который будет использован как аргумент для вызова обработчика.  
-`trigger<T extends object>(event: string, context?: Partial<T>): (data: T) => void` - возвращает функцию, при вызове которой инициализируется требуемое в параметрах событие с передачей в него данных из второго параметра.
+**Методы класса:**  
+- `on<T extends object>(event: EventName, callback: (data: T) => void): void` - подписка на событие, принимает название события и функцию обработчик.  
+- `emit<T extends object>(event: string, data?: T): void` - инициализация события. При вызове события в метод передается название события и объект с данными, который будет использован как аргумент для вызова обработчика.  
+- `trigger<T extends object>(event: string, context?: Partial<T>): (data: T) => void` - возвращает функцию, при вызове которой инициализируется требуемое в параметрах событие с передачей в него данных из второго параметра.
 
-Данные
+## Данные
 
-Переменные окружения и константы
+### Переменные окружения и константы
 
-Файл .env
-
+**Файл .env**
+```
 VITE_API_ORIGIN=https://larek-api.nomoreparties.co
-Файл src/utils/constants.ts
+```
 
-API_URL = ${VITE_API_ORIGIN}/api/weblarek — базовый адрес API
-CDN_URL = ${VITE_API_ORIGIN}/content/weblarek — базовый адрес CDN для картинок
-categoryMap — соответствия категорий модификаторам для UI
-Типы данных
+**Файл src/utils/constants.ts**
+- `API_URL = ${VITE_API_ORIGIN}/api/weblarek` — базовый адрес API
+- `CDN_URL = ${VITE_API_ORIGIN}/content/weblarek` — базовый адрес CDN для картинок
+- `categoryMap` — соответствия категорий модификаторам для UI
 
-Все типы и интерфейсы объявлены в файле: src/types/index.ts
+### Типы данных
 
-Интерфейсы
+Все типы и интерфейсы объявлены в файле: `src/types/index.ts`
 
-ApiPostMethods
+**Интерфейсы**
 
-'POST' | 'PUT' | 'DELETE' — допустимые методы при отправке данных на сервер
-IApi
+- `ApiPostMethods` - `'POST' | 'PUT' | 'DELETE'` — допустимые методы при отправке данных на сервер
 
-get<T>(uri: string): Promise<T> — GET-запрос на uri, вернёт данные типа T
-post<T>(uri: string, data: object, method?: ApiPostMethods): Promise<T> — отправка data на uri (по умолчанию POST), вернёт данные типа T
+- `IApi`
+  - `get<T>(uri: string): Promise<T>` — GET-запрос на uri, вернёт данные типа T
+  - `post<T>(uri: string, data: object, method?: ApiPostMethods): Promise<T>` — отправка data на uri (по умолчанию POST), вернёт данные типа T
 
-TPayment
+- `TPayment` - `'online' | 'offline'` — способ оплаты: картой или наличными
 
-'online' | 'offline' — способ оплаты: картой или наличными
+- `IProduct` (товар)
+  - `id: string` — уникальный идентификатор
+  - `description: string` — описание
+  - `image: string` — имя файла картинки на CDN
+  - `title: string` — название товара
+  - `category: string` — категория
+  - `price: number | null` — цена в ₽; null — товар нельзя купить
 
-IProduct (товар)
+- `IBuyer` (покупатель)
+  - `payment: TPayment` — способ оплаты
+  - `email: string` — e-mail
+  - `phone: string` — телефон
+  - `address: string` — адрес
 
-id: string — уникальный идентификатор
-description: string — описание
-image: string — имя файла картинки на CDN
-title: string — название товара
-category: string — категория
-price: number | null — цена в ₽; null — товар нельзя купить
+- `IOrderRequest` (данные для оформления заказа)
+  - `payment: TPayment` — способ оплаты
+  - `email: string` — e-mail
+  - `phone: string` — телефон  
+  - `address: string` — адрес
+  - `total: number` — сумма заказа
+  - `items: string[]` — массив ID товаров
+  - `customer: IBuyer` — данные покупателя
 
-IBuyer (покупатель)
+- `IValidationErrors` (ошибки валидации)
+  - `payment?: string` — ошибка выбора способа оплаты
+  - `email?: string` — ошибка в e-mail
+  - `phone?: string` — ошибка в телефоне
+  - `address?: string` — ошибка в адресе
 
-payment: TPayment — способ оплаты
-email: string — e-mail
-phone: string — телефон
-address: string — адрес
+- `IProductsResponse`
+  - `total: number` — сколько всего товаров на сервере
+  - `items: IProduct[]` — массив товаров текущего запроса
 
-IOrderRequest (данные для оформления заказа)
+- `IOrderResponse`
+  - `id: string` — идентификатор созданного заказа
 
-payment: TPayment — способ оплаты
-email: string — e-mail
-phone: string — телефон  
-address: string — адрес
-total: number — сумма заказа
-items: string[] — массив ID товаров
-customer: IBuyer — данные покупателя
-IValidationErrors (ошибки валидации)
-
-payment?: string — ошибка выбора способа оплаты
-email?: string — ошибка в e-mail
-phone?: string — ошибка в телефоне
-address?: string — ошибка в адресе
-
-IProductsResponse
-
-total: number — сколько всего товаров на сервере
-items: IProduct[] — массив товаров текущего запроса
-
-IOrderResponse
-
-id: string — идентификатор созданного заказа
-
-Модели данных
+## Модели данных
 
 Модели слоя Model изолированы, каждая отвечает строго за свою задачу.
 
-CatalogModel
+### CatalogModel
 
-Назначение: хранение каталога товаров и выбранного товара для детального просмотра
+**Назначение:** хранение каталога товаров и выбранного товара для детального просмотра
 
-Поля:
+**Конструктор:**
+- `events: IEvents` - экземпляр EventEmitter для работы с событиями
 
-products: IProduct[] — список всех товаров
-previewId?: string — id товара, выбранного для предпросмотра
+**Поля:**
+- `products: IProduct[]` — список всех товаров
+- `previewId?: string` — id товара, выбранного для предпросмотра
 
-Методы:
+**Методы:**
+- `setProducts(list: IProduct[]): void` — сохранить массив товаров
+- `getProducts(): IProduct[]` — получить весь каталог
+- `getById(id: string): IProduct | undefined` — получить товар по id
+- `setPreview(id?: string): void` — выбрать товар для предпросмотра
+- `getPreview(): IProduct | undefined` — получить текущий товар предпросмотра
 
-setProducts(list: IProduct[]): void — сохранить массив товаров
-getProducts(): IProduct[] — получить весь каталог
-getById(id: string): IProduct | undefined — получить товар по id
-setPreview(id?: string): void — выбрать товар для предпросмотра
-getPreview(): IProduct | undefined — получить текущий товар предпросмотра
+**События:**
+- `catalog:changed` — обновился список товаров
+- `catalog:preview` — выбран товар для предпросмотра
 
-События:
+### CartModel
 
-catalog:changed — обновился список товаров
-catalog:preview — выбран товар для предпросмотра
+**Назначение:** хранение выбранных пользователем товаров и расчёт агрегатов корзины
 
-CartModel
+**Конструктор:**
+- `events: IEvents` - экземпляр EventEmitter для работы с событиями
 
-Назначение: хранение выбранных пользователем товаров и расчёт агрегатов корзины
+**Поля:**
+- `items: IProduct[]` — содержимое корзины
 
-Поля:
+**Методы:**
+- `getItems(): IProduct[]` — получить позиции корзины
+- `add(product: IProduct): void` — добавить товар (только уникальные товары)
+- `remove(productId: string): void` — удалить товар
+- `clear(): void` — очистить корзину
+- `getCount(): number` — суммарное количество единиц товара
+- `getTotalPrice(products: IProduct[]): number` — итоговая стоимость
+- `has(productId: string): boolean` — проверка наличия товара в корзине
 
-items: IProduct[] — содержимое корзины
+**События:**
+- `cart:changed` — корзина изменилась
 
-Методы:
+### BuyerModel
 
-getItems(): IProduct[] — получить позиции корзины
-add(product: IProduct): void — добавить товар (только уникальные товары)
-remove(productId: string): void — удалить товар
-clear(): void — очистить корзину
-getCount(): number — суммарное количество единиц товара
-getTotalPrice(products: IProduct[]): number — итоговая стоимость
-has(productId: string): boolean — проверка наличия товара в корзине
+**Назначение:** хранение данных покупателя и их валидация
 
-События:
+**Конструктор:**
+- `events: IEvents` - экземпляр EventEmitter для работы с событиями
 
-cart:changed — корзина изменилась
+**Поля:**
+- `payment?: TPayment`
+- `email?: string`
+- `phone?: string`
+- `address?: string`
 
-BuyerModel
+**Методы:**
+- `patch(data: Partial<IBuyer>): void` — частичное сохранение данных
+- `get(): IBuyer` — получить все данные покупателя
+- `clear(): void` — очистить данные
+- `validate(): IValidationErrors` — валидация полей по правилу «поле не пустое»
 
-Назначение: хранение данных покупателя и их валидация
+**События:**
+- `buyer:changed` — изменены данные покупателя
 
-Поля:
-
-payment?: TPayment
-email?: string
-phone?: string
-address?: string
-
-Методы:
-
-patch(data: Partial<IBuyer>): void — частичное сохранение данных
-get(): IBuyer — получить все данные покупателя
-clear(): void — очистить данные
-validate(): IValidationErrors — валидация полей по правилу «поле не пустое»
-
-События:
-
-buyer:changed — изменены данные покупателя
-Слой коммуникации
+## Слой коммуникации
 
 Класс ShopApi (src/components/services/ShopApi.ts) инкапсулирует работу с сервером.
 
-Конструктор:
+**Конструктор:**
+- `http: IApi` — принимает любой объект по интерфейсу IApi
 
-constructor(http: IApi) — принимает любой объект по интерфейсу IApi
+**Методы:**
+- `getProducts(): Promise<IProduct[]>` — GET /product/, возвращает массив товаров
+- `createOrder(payload: IOrderRequest): Promise<IOrderResponse>` — POST /order/, отправляет данные заказа
 
-Методы:
-
-getProducts(): Promise<IProduct[]> — GET /product/, возвращает массив товаров
-createOrder(payload: IOrderRequest): Promise<IOrderResponse> — POST /order/, отправляет данные заказа
-
-Типы ответов:
-
-IProductsResponse { total: number; items: IProduct[] }
-IOrderResponse { id: string }
+**Типы ответов:**
+- `IProductsResponse { total: number; items: IProduct[] }`
+- `IOrderResponse { id: string }`
 
 # Слой Представления (View)
 
@@ -268,6 +263,9 @@ IOrderResponse { id: string }
 ```typescript
 class Card<T extends Partial<IProduct>> extends Component<T>
 ```
+
+**Конструктор:**
+- `container: HTMLElement` - DOM-элемент, в который рендерится карточка
 
 **Назначение:** Базовый класс для карточек товаров, содержащий общую функциональность.
 
@@ -291,6 +289,11 @@ class Card<T extends Partial<IProduct>> extends Component<T>
 class CardCatalog extends Card<IProduct>
 ```
 
+**Конструктор:**
+- `container: HTMLElement` - DOM-элемент карточки
+- `actions: ICardCatalogActions` - объект с обработчиками событий
+  - `onClick?: () => void` - обработчик клика по карточке
+
 **Назначение:** Отображение товара в основном каталоге магазина.
 
 **DOM-элементы:**
@@ -313,6 +316,11 @@ class CardCatalog extends Card<IProduct>
 ```typescript
 class CardPreview extends Card<IProduct>
 ```
+
+**Конструктор:**
+- `container: HTMLElement` - DOM-элемент карточки
+- `actions: ICardPreviewActions` - объект с обработчиками событий
+  - `onClick?: () => void` - обработчик клика по кнопке
 
 **Назначение:** Детальное отображение товара в модальном окне предпросмотра.
 
@@ -340,6 +348,11 @@ class CardPreview extends Card<IProduct>
 class CardBasket extends Card<IProduct>
 ```
 
+**Конструктор:**
+- `container: HTMLElement` - DOM-элемент карточки
+- `actions?: ICardBasketActions` - опциональный объект с обработчиками событий
+  - `onDelete?: (product: IProduct) => void` - обработчик удаления товара
+
 **Назначение:** Отображение товара в списке корзины покупок.
 
 **DOM-элементы:**
@@ -352,7 +365,7 @@ class CardBasket extends Card<IProduct>
 - `set index(value: number)` - установка порядкового номера
 
 **События:**
-- `click` по кнопке удаления → вызывает `actions.onDelete()`
+- `click` по кнопке удаления → вызывает `actions.onDelete(product)`
 
 ## Базовый класс форм
 
@@ -362,6 +375,10 @@ class CardBasket extends Card<IProduct>
 ```typescript
 abstract class Form<T> extends Component<T>
 ```
+
+**Конструктор:**
+- `container: HTMLElement` - DOM-элемент формы
+- `events: IEvents` - экземпляр EventEmitter для работы с событиями
 
 **Назначение:** Базовая функциональность для форм с валидацией и обработкой отправки.
 
@@ -390,6 +407,10 @@ abstract class Form<T> extends Component<T>
 class Order extends Form<IOrder>
 ```
 
+**Конструктор:**
+- `container: HTMLElement` - DOM-элемент формы
+- `events: IEvents` - экземпляр EventEmitter для работы с событиями
+
 **Назначение:** Форма выбора способа оплаты и ввода адреса доставки.
 
 **DOM-элементы:**
@@ -413,6 +434,10 @@ class Order extends Form<IOrder>
 class Contacts extends Form<IContacts>
 ```
 
+**Конструктор:**
+- `container: HTMLElement` - DOM-элемент формы
+- `events: IEvents` - экземпляр EventEmitter для работы с событиями
+
 **Назначение:** Форма ввода email и телефона покупателя.
 
 **DOM-элементы:**
@@ -433,6 +458,10 @@ class Contacts extends Form<IContacts>
 ```typescript
 class Basket extends Component<IBasket>
 ```
+
+**Конструктор:**
+- `container: HTMLElement` - DOM-элемент корзины
+- `events: IEvents` - экземпляр EventEmitter для работы с событиями
 
 **Назначение:** Отображение списка товаров в корзине и общей суммы.
 
@@ -456,6 +485,9 @@ class Basket extends Component<IBasket>
 class Success extends Component<ISuccess>
 ```
 
+**Конструктор:**
+- `container: HTMLElement` - DOM-элемент компонента
+
 **Назначение:** Отображение подтверждения успешного оформления заказа.
 
 **DOM-элементы:**
@@ -477,6 +509,10 @@ class Success extends Component<ISuccess>
 class Modal extends Component<IModal>
 ```
 
+**Конструктор:**
+- `events: IEvents` - экземпляр EventEmitter для работы с событиями
+- `container: HTMLElement` - DOM-элемент модального окна
+
 **Назначение:** Универсальное модальное окно для отображения различного контента.
 
 **DOM-элементы:**
@@ -491,6 +527,7 @@ class Modal extends Component<IModal>
 **События:**
 - `click` по кнопке закрытия → `modal:request-close`
 - `click` по overlay → `modal:request-close`
+- `keydown` (Escape) → `modal:request-close`
 
 ### Header
 **Шапка сайта**
@@ -498,6 +535,10 @@ class Modal extends Component<IModal>
 ```typescript
 class Header extends Component<IHeader>
 ```
+
+**Конструктор:**
+- `events: IEvents` - экземпляр EventEmitter для работы с событиями
+- `container: HTMLElement` - DOM-элемент шапки
 
 **Назначение:** Отображение шапки сайта с счетчиком товаров в корзине.
 
@@ -517,6 +558,9 @@ class Header extends Component<IHeader>
 ```typescript
 class Gallery extends Component<IGallery>
 ```
+
+**Конструктор:**
+- `container: HTMLElement` - DOM-элемент контейнера галереи
 
 **Назначение:** Контейнер для отображения карточек товаров каталога.
 

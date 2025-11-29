@@ -180,15 +180,27 @@ events.on('contacts:submit', () => {
         items: cart.getItems().map((item) => item.id),
     };
 
-    api.createOrder(data).then((result) => {
-        cart.clear();
-        buyer.clear();
+    api.createOrder(data)
+        .then((result) => {
+            cart.clear();
+            buyer.clear();
 
-        modal.content = success.render({
-            description: `Списано ${result.total} синапсов`,
-        });
+            modal.content = success.render({
+                description: `Списано ${result.total} синапсов`,
+            });
 
-        modal.open();
+            modal.open();
+        })
+
+        .catch((error) => {
+            console.error('Ошибка создания заказа:', error);
+            contacts.render({ 
+                email: buyer.getData().email ?? '',
+                phone: buyer.getData().phone ?? '',
+
+                error: 'Не удалось оформить заказ. Попробуйте позже.',
+                valid: false
+            });
         });
 });
 
@@ -223,3 +235,4 @@ api
     .catch((error) => {
         console.error('Ошибка загрузки каталога:', error);
     });
+renderBasket();
