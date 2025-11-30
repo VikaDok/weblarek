@@ -89,7 +89,7 @@ events.on('catalog:preview', () => {
 
     modal.content = card.render({...product, inCart, buttonText: product.price === null ? 'Недоступно' : inCart ? 'Удалить' : 'В корзину',
         buttonDisabled: product.price === null,
-    });
+    } as any);
 
     modal.open();
 });
@@ -162,7 +162,7 @@ events.on('buyer:changed', () => {
         address: data.address ?? '',
         error: data.payment || data.address ? errors.payment || errors.address || '' : '',
         valid: !errors.payment && !errors.address,
-    });
+    } as any);
 
     //контакты
     contacts.render({
@@ -170,7 +170,7 @@ events.on('buyer:changed', () => {
         phone: data.phone ?? '',
         error: data.email || data.phone ? errors.email || errors.phone || '' : '',
         valid: !errors.email && !errors.phone,
-    });
+    } as any);
 });
 
 //в заказ
@@ -181,7 +181,7 @@ events.on('contacts:submit', () => {
         items: cart.getItems().map((item) => item.id),
     };
 
-    api.createOrder(data)
+    api.createOrder(data  as any)
         .then((result) => {
             cart.clear();
             buyer.clear();
@@ -201,7 +201,7 @@ events.on('contacts:submit', () => {
 
                 error: 'Не удалось оформить заказ. Попробуйте позже.',
                 valid: false
-            });
+            } as any);
         });
 });
 
@@ -218,7 +218,7 @@ function renderBasket() {
         const card = new CardBasket(node, {
             onDelete: () => events.emit('cart:item:remove', { id: product.id }),
         });
-        return card.render({ ...product, index: index + 1 });
+        return card.render({ ...product, index: index + 1 } as any);
     });
 
     basket.items = cards;

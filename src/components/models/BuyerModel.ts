@@ -25,12 +25,12 @@ export class BuyerModel {
     }    
 
 // получаем данные
-    getData(): Partial<IBuyer> {
+    getData(): IBuyer {
         return {
-            payment: this.payment || undefined,
-            email: this.email || undefined,
-            phone: this.phone || undefined,
-            address: this.address || undefined,
+            payment: this.payment as TPayment,
+            email: this.email,
+            phone: this.phone,
+            address: this.address,
         };
     }
 
